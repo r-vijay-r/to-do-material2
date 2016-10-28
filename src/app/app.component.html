@@ -37,7 +37,7 @@
 								<md-icon *ngIf="item.status!='completed'">done</md-icon>
 								<md-icon *ngIf="item.status=='completed'">close</md-icon>
 							</button></td>
-							<td>{{item.todo}}</td>
+							<td [class.taskCompleted]="item.status=='completed'">{{item.todo}}</td>
 							<td><button md-icon-button (click)="edit(item.$key,item.todo)">
 								<md-icon>edit</md-icon>
 							</button></td>

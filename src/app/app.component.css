@@ -62,3 +62,7 @@ md-input {
 table,tr{
   width: 100%;
 }
+.taskCompleted{
+  text-decoration: line-through;
+  color:green;
+}
