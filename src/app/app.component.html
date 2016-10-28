@@ -1,3 +1,93 @@
-<h1>
-  {{title}}
-</h1>
+<md-sidenav-layout fullscreen>
+	<md-toolbar color="primary">
+		<span>{{title}}</span>
+		<span class="example-fill-remaining-space"></span>
+		<span *ngIf="(af.auth | async)">
+			<img md-mini-fab src="{{(af.auth | async)?.auth.photoURL}}">
+		</span>
+			<span>{{(af.auth | async)?.auth.displayName}}</span>
+		<span *ngIf="(af.auth | async)">
+			<span><button md-button (click)="af.auth.logout()" >Logout</button></span>
+		</span>
+		<span *ngIf="!(af.auth | async)"><button md-button (click)="af.auth.login()" >Login</button></span>
+	</md-toolbar>
+	<md-card  *ngIf="af.auth | async">
+	<input type="text" hidden id="uid" value="{{(af.auth | async)?.auth.uid}}">
+		<form #form="ngForm" (ngSubmit)="submit(todo.value)" *ngIf="active">
+	        <md-input placeholder="Add a to-do" maxlength="300" name="todo" #todo required>
+	          <md-hint align="end">{{todo.characterCount}} / 300</md-hint>
+	        </md-input>
+    	</form>
+    	<form #form="ngForm" (ngSubmit)="update(todo.value)" *ngIf="!active">
+	        <md-input placeholder="Edit a to-do" #todo maxlength="300" name="todo" [(ngModel)]="editItem" required md-autofocus>
+	          <md-hint align="end">{{todo.characterCount}} / 300</md-hint>
+	        </md-input>
+    	</form>
+	        <md-card-actions align="end" *ngIf="!active"><button md-icon-button (click)="active=!active" color="accent" style="margin-right: 30px;"><md-icon>cancel</md-icon>Cancel</button></md-card-actions>
+	</md-card>
+	<input type="text" hidden id="uid" value="not_set">
+	<md-card class="form" *ngIf="af.auth | async">
+		<md-tab-group>
+	        <md-tab *ngIf="urlset">
+				<template md-tab-label>All to-dos</template>
+				<template md-tab-content>
+					<table>
+						<tr *ngFor="let item of todos | async">
+							<td><button md-icon-button (click)="statusUpdater(item.$key, item.status)">
+								<md-icon *ngIf="item.status!='completed'">done</md-icon>
+								<md-icon *ngIf="item.status=='completed'">close</md-icon>
+							</button></td>
+							<td>{{item.todo}}</td>
+							<td><button md-icon-button (click)="edit(item.$key,item.todo)">
+								<md-icon>edit</md-icon>
+							</button></td>
+							<td><button md-icon-button (click)="deleteItem(item.$key)">
+								<md-icon>delete</md-icon>
+							</button></td>
+						</tr>
+					</table>
+				</template>
+	        </md-tab>
+	        <md-tab *ngIf="urlset">
+				<template md-tab-label>Completed</template>
+				<template md-tab-content>
+					<table>
+						<tr *ngFor="let item of todos | async">
+							<td  *ngIf="item.status=='completed'"><button md-icon-button (click)="statusUpdater(item.$key, item.status)">
+								<md-icon *ngIf="item.status!='completed'">done</md-icon>
+								<md-icon *ngIf="item.status=='completed'">close</md-icon>
+							</button></td>
+							<td  *ngIf="item.status=='completed'">{{item.todo}}</td>
+							<td  *ngIf="item.status=='completed'"><button md-icon-button (click)="edit(item.$key,item.todo)">
+								<md-icon>edit</md-icon>
+							</button></td>
+							<td  *ngIf="item.status=='completed'"><button md-icon-button (click)="deleteItem(item.$key)">
+								<md-icon>delete</md-icon>
+							</button></td>
+						</tr>
+					</table>			
+				</template>
+	        </md-tab>
+			<md-tab *ngIf="urlset">
+				<template md-tab-label>To be done</template>
+				<template md-tab-content>
+					<table>
+						<tr *ngFor="let item of todos | async">
+							<td  *ngIf="item.status!='completed'"><button md-icon-button (click)="statusUpdater(item.$key, item.status)">
+								<md-icon *ngIf="item.status!='completed'">done</md-icon>
+								<md-icon *ngIf="item.status=='completed'">close</md-icon>
+							</button></td>
+							<td  *ngIf="item.status!='completed'">{{item.todo}}</td>
+							<td  *ngIf="item.status!='completed'"><button md-icon-button (click)="edit(item.$key,item.todo)">
+								<md-icon>edit</md-icon>
+							</button></td>
+							<td  *ngIf="item.status!='completed'"><button md-icon-button (click)="deleteItem(item.$key)">
+								<md-icon>delete</md-icon>
+							</button></td>
+						</tr>
+					</table>		
+				</template>
+			</md-tab>
+		</md-tab-group>
+	</md-card>
+</md-sidenav-layout>
